@@ -2,7 +2,7 @@
 
 Juego arcade en Pygame basado en el tema:
 
-> La vida da vueltas como pollito a la brasa ...............te toca sobrevivir a todo.
+> La vida da vueltas, como pollo a la brasa ...............te toca sobrevivir a todo.
 
 El proyecto mantiene una estructura modular similar al juego base Galaga: pantallas, jugador, enemigos, balas, colisiones, puntaje, estado y assets separados en carpetas.
 
