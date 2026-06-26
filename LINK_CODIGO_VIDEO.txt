@@ -1,9 +1,12 @@
-Integrantes:
+GameJam: La vida da vueltas como el pollo a la Brasa.
+
+Integrante:
 Cesar Omar Lopez Arteaga	Codigo: 20215508C
 
 
-Link de repositorio:
+-Link de repositorio:
+ https://github.com/CeSaRLoPeZArTeAgA/Video_Juego.git
 
-
-
-Link de Video:
+-Link de Video:
+ 
+ 
