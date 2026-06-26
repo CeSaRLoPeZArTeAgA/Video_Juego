@@ -95,4 +95,4 @@ UNIVERSES = [
     },
 ]
 
-FINAL_PHRASE = "La vida da vueltas, como un pollo a la brasa ................... te toca sobrevivir a todo."
+FINAL_PHRASE = "La vida da vueltas, como un pollo a la brasa .......... te toca sobrevivir a todo."
