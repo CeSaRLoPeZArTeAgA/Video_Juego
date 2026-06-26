@@ -41,6 +41,12 @@ python -m pip install -r requirements.txt
 python main.py
 ```
 
+En Windows tambien puedes usar:
+
+```bat
+run.bat
+```
+
 ## Estructura
 
 ```text
@@ -85,3 +91,10 @@ pollo_multiverso_vueltas_destino/
 - Cambiar imagenes: carpeta `imagenes/`.
 - Cambiar controles o movimiento: `player.py`.
 - Cambiar reglas generales de partida: `screenGame.py`.
+
+
+## Mejoras de esta version
+
+- Se agrego audio: musica por universo y efectos de salto, disparo, golpe, power-up, jefe, portal, victoria y derrota.
+- Se ajusto Delivery Infernal para que sea mas claro y mas pasable: ahora tiene salto doble, mas espacio horizontal, menos castigo, auto-disparo contra el jefe y una ayuda visual en pantalla.
+- Se mejoro el tratamiento visual de sprites y fondos con un realce de color, contraste y nitidez.

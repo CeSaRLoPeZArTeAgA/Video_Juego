@@ -21,7 +21,7 @@ class BackgroundMoving:
 
     def draw(self, screen, dt):
         if self.image:
-            screen.blit(self.image, (0, 0))
+            screen.blit(self.image, (0, 12))
         for p in self.particles:
             p[1] += p[2] * (0.5 + 0.25 * self.universe_id) * dt * 60
             if p[1] > HEIGHT:

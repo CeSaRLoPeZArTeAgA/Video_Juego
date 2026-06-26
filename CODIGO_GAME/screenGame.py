@@ -1,7 +1,7 @@
 import random
 import pygame
 from pygame.locals import K_SPACE, K_j, K_p, K_ESCAPE
-from config import WIDTH, HEIGHT, WHITE, YELLOW, ORANGE, RED
+from config import WIDTH, HEIGHT, WHITE, YELLOW, ORANGE
 from background import BackgroundMoving
 from player import Player
 from status import Status
@@ -13,6 +13,8 @@ from boss import Boss
 from utils import load_image, draw_text
 from soundManager import SoundManager
 
+HUD_HEIGHT = 72
+
 class ScreenGame:
     def __init__(self, screen):
         self.screen = screen
@@ -23,11 +25,10 @@ class ScreenGame:
         self.score = Score()
         self.spawner = EnemySpawner()
         self.collision = CollisionDetector()
-        self.portal_img = load_image("UI/portal.png", (190,190))
-        self.font_big = pygame.font.SysFont('arial', 36, bold=True)
-        self.font = pygame.font.SysFont('arial', 23, bold=True)
-        self.small = pygame.font.SysFont('arial', 18)
-        self.tiny = pygame.font.SysFont('arial', 16)
+        self.portal_img = load_image("UI/portal.png", (190, 190))
+        self.font_big = pygame.font.SysFont('arial', 34, bold=True)
+        self.font = pygame.font.SysFont('arial', 22, bold=True)
+        self.small = pygame.font.SysFont('arial', 16)
         self.total_score = 0
         self.universe_score = 0
         self.u_index = 0
@@ -39,6 +40,16 @@ class ScreenGame:
         self.message_timer = 0.0
         self.sound = SoundManager.get()
         self.runner_help_timer = 0.0
+        # Precarga real de bosses con el tamaño exacto usado en juego.
+        # Esto evita microcongelamientos cuando entra el enemigo final.
+        for u in UNIVERSES:
+            try:
+                _name, img, _hp, _pts = u['boss']
+                mech = u.get('mechanic')
+                size = (210, 175) if mech == 'collect' else (190, 140)
+                load_image(img, size)
+            except Exception:
+                pass
         self.start_universe(0)
 
     def _music_for_universe(self, idx):
@@ -56,13 +67,12 @@ class ScreenGame:
             for _ in range(4):
                 self.spawner.spawn(self.universe, initial=True)
         else:
-            # runner: primera oleada visible pero espaciada
             for _ in range(2):
                 self.spawner.spawn(self.universe, initial=True)
-            self.runner_help_timer = 8.0
+            self.runner_help_timer = 6.0
         self.portal_timer = 0.0
         self.message = self.universe["title"]
-        self.message_timer = 2.5
+        self.message_timer = 1.4
         self.sound.play_music(self._music_for_universe(idx))
 
     def spawn_boss_if_needed(self):
@@ -70,14 +80,14 @@ class ScreenGame:
             name, img, hp, points = self.universe["boss"]
             self.boss = Boss(name, img, hp, points, self.universe["mechanic"])
             self.message = f"JEFE: {name}"
-            self.message_timer = 2.2
+            self.message_timer = 1.2
             self.spawner.enemies.clear()
             self.sound.play_sfx('boss')
 
     def clear_universe(self):
-        self.portal_timer = 2.4
+        self.portal_timer = 2.1
         self.message = self.universe["clear_phrase"]
-        self.message_timer = 2.4
+        self.message_timer = 1.5
         self.sound.play_sfx('portal')
 
     def handle_events(self):
@@ -90,7 +100,6 @@ class ScreenGame:
                 if event.key == K_p:
                     self.pause = not self.pause
                 if event.key in (K_j, K_SPACE):
-                    # Runner: SPACE solo salta. J dispara. En los otros universos ambos sirven.
                     if self.universe["mechanic"] != "runner" or event.key == K_j:
                         self.player.shoot(self.universe["mechanic"])
         return None
@@ -101,8 +110,6 @@ class ScreenGame:
         if mech != "runner" and (keys[K_SPACE] or keys[K_j]):
             self.player.shoot(mech)
         if mech == "runner":
-            # El runner se juega en X + salto. J sirve para disparar; además,
-            # cuando el jefe aparece el pollo auto-dispara para no hacerlo injusto.
             if keys[K_j] or self.boss is not None:
                 self.player.shoot(mech)
         self.player.update(dt, keys, mech)
@@ -137,13 +144,21 @@ class ScreenGame:
         self.message_timer = max(0, self.message_timer - dt)
         self.runner_help_timer = max(0, self.runner_help_timer - dt)
 
+    def _blit_overlay_rect(self, rect, fill=(0,0,0), alpha=145, border=None, radius=12):
+        surf = pygame.Surface((rect[2], rect[3]), pygame.SRCALPHA)
+        pygame.draw.rect(surf, (*fill, alpha), (0, 0, rect[2], rect[3]), border_radius=radius)
+        if border is not None:
+            pygame.draw.rect(surf, border, (0, 0, rect[2], rect[3]), 2, border_radius=radius)
+        self.screen.blit(surf, rect[:2])
+
     def draw_hud_cards(self):
-        pygame.draw.rect(self.screen, (0,0,0,110), (0,0,WIDTH,104))
+        self._blit_overlay_rect((0, 0, WIDTH, HUD_HEIGHT), fill=(0,0,0), alpha=165)
         self.score.draw(self.screen, self.total_score, self.universe_score, self.universe["target"])
         self.status.draw(self.screen, self.player.get_lives(), self.universe["short"], self.boss, self.player.shield, self.player.turbo)
-        draw_text(self.screen, self.universe["goal"], self.small, WHITE, center=(WIDTH//2, 102), max_width=880)
+        # Se retira por completo la frase de objetivo superior que tapaba el fondo.
         if self.universe['mechanic'] == 'runner' and self.runner_help_timer > 0:
-            draw_text(self.screen, 'Delivery Infernal: izquierda/derecha para moverte, SPACE para saltar y J para disparar.', self.tiny, ORANGE, center=(WIDTH//2, 124), max_width=900)
+            self._blit_overlay_rect((18, HEIGHT - 48, 390, 30), fill=(0,0,0), alpha=135, border=(255,170,30), radius=10)
+            draw_text(self.screen, 'SPACE salta | J dispara', self.small, ORANGE, center=(213, HEIGHT - 33), max_width=360)
 
     def draw(self, dt):
         self.bg.draw(self.screen, dt)
@@ -154,16 +169,17 @@ class ScreenGame:
         self.player.draw(self.screen)
         self.draw_hud_cards()
         if self.message_timer > 0:
-            pygame.draw.rect(self.screen, (0,0,0,155), (80, 245, WIDTH-160, 120), border_radius=18)
-            draw_text(self.screen, self.message, self.font_big, YELLOW, center=(WIDTH//2, 305), max_width=780)
+            rect = (120, 225, WIDTH - 240, 64)
+            self._blit_overlay_rect(rect, fill=(0, 0, 0), alpha=78, border=None, radius=16)
+            draw_text(self.screen, self.message, self.font_big, YELLOW, center=(WIDTH//2, rect[1] + rect[3]//2), max_width=rect[2] - 24)
         if self.portal_timer > 0:
             angle = int(pygame.time.get_ticks() * 0.18)
             portal = pygame.transform.rotate(self.portal_img, angle)
             self.screen.blit(portal, (WIDTH//2 - portal.get_width()//2, HEIGHT//2 - portal.get_height()//2))
         if self.pause:
-            pygame.draw.rect(self.screen, (0,0,0,170), (0,0,WIDTH,HEIGHT))
-            draw_text(self.screen, "PAUSA", self.font_big, YELLOW, center=(WIDTH//2, HEIGHT//2-20))
-            draw_text(self.screen, "P para continuar", self.font, WHITE, center=(WIDTH//2, HEIGHT//2+35))
+            self._blit_overlay_rect((0, 0, WIDTH, HEIGHT), fill=(0,0,0), alpha=165)
+            draw_text(self.screen, "PAUSA", self.font_big, YELLOW, center=(WIDTH//2, HEIGHT//2 - 20))
+            draw_text(self.screen, "P para continuar", self.font, WHITE, center=(WIDTH//2, HEIGHT//2 + 35))
 
     def loop(self):
         while True:

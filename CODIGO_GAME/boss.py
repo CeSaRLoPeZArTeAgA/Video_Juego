@@ -5,10 +5,10 @@ from config import WIDTH, HEIGHT
 class Boss(Enemy):
     def __init__(self, name, image_path, hp, points, mechanic):
         size = (190, 140)
-        x, y = WIDTH // 2, 115
+        x, y = WIDTH // 2, 100
         if mechanic == "collect":
             size = (210, 175)
-            x, y = WIDTH // 2, 118
+            x, y = WIDTH // 2, 106
         elif mechanic == "runner":
             x, y = WIDTH - 160, HEIGHT - 135
         super().__init__(name, image_path, x, y, 120, 0, hp=hp, points=points, size=size, behavior="boss")
@@ -25,5 +25,5 @@ class Boss(Enemy):
             self.rect.x += int(self.vx * dt)
             if self.rect.left < 60 or self.rect.right > WIDTH - 60:
                 self.vx *= -1
-            self.rect.y = int(110 + 25 * math.sin(self.t * 2.0))
+            self.rect.y = int(96 + 22 * math.sin(self.t * 2.0))
         self.hit_flash = max(0, self.hit_flash - dt)
