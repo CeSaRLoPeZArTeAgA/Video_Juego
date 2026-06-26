@@ -38,7 +38,7 @@ UNIVERSES = [
         "collectible": ("Libro de Grafica", "Powerups/libro.png", 1, 1),
         "boss": ("El Examen Final de Grafica 3 horas", "Bosses/examen_final_grafica.png", 20, 400),
         "lose_phrase": "Ya fui, me voy al susti en Grafica........",
-        "clear_phrase": "Aprobaste Grafica sin vender tu alma al rasterizador.",
+        "clear_phrase": "Aprobaste Grafica y no se como!!!!",
     },
     {
         "id": 3,
@@ -64,7 +64,7 @@ UNIVERSES = [
         ],
         "boss": ("El Motorizado Supremo", "Bosses/motorizado_supremo.png", 12, 420),
         "lose_phrase": "El chamo te quito la chamba.........",
-        "clear_phrase": "Escapaste de la caja de delivery con estilo.",
+        "clear_phrase": "Escapaste a la moto extorsionadora del chamo.",
     },
     {
         "id": 4,
@@ -95,4 +95,4 @@ UNIVERSES = [
     },
 ]
 
-FINAL_PHRASE = "La vida da vueltas como pollito a la brasa ...............te toca sobrevivir a todo."
+FINAL_PHRASE = "La vida da vueltas, como un pollo a la brasa ................... te toca sobrevivir a todo."

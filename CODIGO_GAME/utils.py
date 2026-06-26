@@ -12,8 +12,6 @@ def _is_light_neutral(pixel):
     r, g, b, a = pixel
     if a == 0:
         return True
-    # Fondo falso típico: blanco/gris claro/checkerboard exportado como pixeles reales.
-    # El umbral baja hasta 180 para capturar cuadros grises del checkerboard.
     return r >= 180 and g >= 180 and b >= 180 and (max(r, g, b) - min(r, g, b) <= 38)
 
 
@@ -28,7 +26,6 @@ def _has_real_transparency(surface):
 
 
 def _edge_is_light_background(surface):
-    """Detecta si los bordes parecen fondo falso claro."""
     w, h = surface.get_size()
     if w == 0 or h == 0:
         return False
