@@ -24,7 +24,7 @@ class EnemySpawner:
         mech = universe["mechanic"]
         if mech == "runner":
             x = WIDTH + (100 if initial else 60)
-            # runner: carriles mas claros. Hueco siempre abajo; otros pueden venir algo altos.
+            # runner,  hueco siempre abajo; otros pueden venir algo altos.
             if "Hueco" in name:
                 y = HEIGHT - 52
                 size = (120, 50)

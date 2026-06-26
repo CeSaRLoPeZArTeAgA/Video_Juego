@@ -20,13 +20,6 @@ class Enemy(pygame.sprite.Sprite):
         self.dead = False
 
     def kill(self):
-        """Marca el enemigo como eliminado aunque esté guardado en una lista normal.
-
-        Importante: en este proyecto los enemigos NO están dentro de un
-        pygame.sprite.Group, sino dentro de una lista de EnemySpawner. Por eso
-        pygame.sprite.Sprite.alive() siempre devolvía False y los enemigos se
-        borraban inmediatamente después de aparecer. Esta bandera corrige eso.
-        """
         self.dead = True
         super().kill()
 

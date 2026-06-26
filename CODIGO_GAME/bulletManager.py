@@ -34,5 +34,4 @@ class BulletManager:
         return self.bullets
 
     def increase_type(self):
-        # Compatibilidad con el proyecto base Galaga.
         pass

@@ -48,10 +48,6 @@ def _edge_is_light_background(surface):
 
 
 def _remove_light_edge_background(surface):
-    """Quita fondos blancos/grises tipo checkerboard conectados al borde.
-
-    No modifica los PNG originales; solo limpia la Surface en memoria.
-    """
     try:
         w, h = surface.get_size()
         if w == 0 or h == 0:
@@ -88,15 +84,6 @@ def _remove_light_edge_background(surface):
 
 
 def _scale_sprite_to_box(img, size):
-    """Escala conservando proporción, limpia fondo falso y centra en caja transparente.
-
-    Orden correcto:
-    1) Reducir el sprite grande al tamaño de juego.
-    2) Quitar fondo checkerboard/blanco del sprite reducido.
-    3) Centrar en canvas transparente.
-
-    Esto evita congelamientos con PNG enormes y también evita el rectángulo blanco.
-    """
     box_w, box_h = size
     if img.get_width() <= 0 or img.get_height() <= 0:
         return img
@@ -107,9 +94,6 @@ def _scale_sprite_to_box(img, size):
 
     scaled = pygame.transform.smoothscale(img, (new_w, new_h))
 
-    # Limpiar el fondo falso ANTES de ponerlo sobre el canvas transparente.
-    # Si se limpiaba después, el canvas ya tenía transparencia real en los bordes
-    # y el rectángulo interno blanco/checkerboard no era detectado.
     scaled = _remove_light_edge_background(scaled)
 
     canvas = pygame.Surface((box_w, box_h), pygame.SRCALPHA)
@@ -139,8 +123,6 @@ def load_image(relative_path, size=None, fallback_size=(64, 64), fallback_color=
             img = _scale_sprite_to_box(img, size)
     else:
         if not rel.startswith('Backgrounds/'):
-            # Solo limpieza directa para sprites pequeños.
-            # Los sprites grandes se limpian cuando se cargan con size.
             if img.get_width() * img.get_height() <= 350_000:
                 img = _remove_light_edge_background(img)
 

@@ -40,8 +40,7 @@ class ScreenGame:
         self.message_timer = 0.0
         self.sound = SoundManager.get()
         self.runner_help_timer = 0.0
-        # Precarga real de bosses con el tamaño exacto usado en juego.
-        # Esto evita microcongelamientos cuando entra el enemigo final.
+        # Precarga real de bosses con el tamaño exacto usado en juego
         for u in UNIVERSES:
             try:
                 _name, img, _hp, _pts = u['boss']
